@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
+export type Health = { ok: true; now: string };
+
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  health(): Health {
+    return { ok: true, now: new Date().toISOString() };
   }
 }
