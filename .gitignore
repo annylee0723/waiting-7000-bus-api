@@ -1,0 +1,20 @@
+# 비밀 — 공공데이터포털 키 등. 절대 커밋하지 않는다
+.env
+.env.*
+!.env.example
+
+# 의존성·빌드
+node_modules/
+dist/
+coverage/
+
+# AI 도구 세션 상태
+.omc/
+.claude/
+
+# 로컬
+.DS_Store
+*.log
+
+# TS 증분 빌드 캐시
+*.tsbuildinfo
