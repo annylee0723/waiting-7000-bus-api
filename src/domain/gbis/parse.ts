@@ -1,4 +1,5 @@
 import type {
+  Crowding,
   GbisResult,
   RouteStation,
   ShapePoint,
@@ -127,6 +128,12 @@ const STATE_BY_CODE: Record<number, VehicleState> = {
   1: 'arrived',
   2: 'departed',
 };
+const CROWDING_BY_CODE: Record<number, Crowding> = {
+  1: 'relaxed',
+  2: 'normal',
+  3: 'crowded',
+  4: 'very_crowded',
+};
 
 /** getBusLocationListv2 응답 → VehicleObservation[]. observedAt은 응답의 queryTime */
 export function parseLocations(raw: unknown): GbisResult<VehicleObservation> {
@@ -143,7 +150,10 @@ export function parseLocations(raw: unknown): GbisResult<VehicleObservation> {
       stationSeq: num(o.stationSeq, 'stationSeq'),
       state,
       remainSeats: optNum(o.remainSeatCnt),
-      crowded: optYn(o.crowded),
+      crowding:
+        typeof o.crowded === 'number'
+          ? (CROWDING_BY_CODE[o.crowded] ?? null)
+          : null,
       lowFloor: optYn(o.lowPlate),
       observedAt: env.queryTime,
     };

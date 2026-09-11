@@ -21,6 +21,9 @@ export type ShapePoint = { seq: number; lng: number; lat: number };
 /** stateCd 0/1/2를 이름으로 */
 export type VehicleState = 'passing' | 'arrived' | 'departed';
 
+/** GBIS crowded 코드 1/2/3/4. 실측(09-11): 빈 좌석 44대에 crowded=1 → 1이 '여유' */
+export type Crowding = 'relaxed' | 'normal' | 'crowded' | 'very_crowded';
+
 /** 위치 API의 차량 한 대. GPS 없음 — 정류소 순번이 전부다 */
 export type VehicleObservation = {
   plateNo: string;
@@ -28,7 +31,7 @@ export type VehicleObservation = {
   stationSeq: number;
   state: VehicleState;
   remainSeats: number | null;
-  crowded: boolean | null;
+  crowding: Crowding | null;
   lowFloor: boolean | null;
   /** 응답의 queryTime(KST 문자열)을 UTC Date로 */
   observedAt: Date;

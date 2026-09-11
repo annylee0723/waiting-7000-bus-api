@@ -146,7 +146,25 @@ describe('봉투(envelope) 처리', () => {
   });
 });
 
-describe('parseLocations (필드는 기획서 §2 실측 기준 — 실제 fixture는 2단계에서 녹화 후 추가)', () => {
+describe('parseLocations (fixture 계약 — 2026-09-11 23:00 KST 녹화, 7002 운행 1대)', () => {
+  it('결과 1건이라 객체로 온 busLocationList를 배열로 맞추고, 코드들을 이름으로 바꾼다', () => {
+    const res = parseLocations(fixture('locations-7002'));
+    if (res.kind !== 'ok') throw new Error(res.kind);
+    expect(res.items).toHaveLength(1);
+    expect(res.items[0]).toEqual({
+      plateNo: '경기77자6176',
+      stationId: 239000653,
+      stationSeq: 17,
+      state: 'departed',
+      remainSeats: 44,
+      crowding: 'relaxed', // crowded: 1 — 빈 좌석 44인데 '혼잡'일 리 없다. 1 = 여유
+      lowFloor: false,
+      observedAt: new Date('2026-09-11T14:00:13.349Z'), // queryTime 23:00:13.349 KST
+    });
+  });
+});
+
+describe('parseLocations (인라인 샘플)', () => {
   it('stateCd 0/1/2 → passing/arrived/departed, observedAt = queryTime(UTC)', () => {
     const raw = {
       response: {
@@ -163,8 +181,8 @@ describe('parseLocations (필드는 기획서 §2 실측 기준 — 실제 fixtu
               stationSeq: 1,
               stateCd: 2,
               remainSeatCnt: 30,
-              crowded: 'N',
-              lowPlate: 'N',
+              crowded: 1,
+              lowPlate: 0,
             },
             {
               plateNo: '경기70아5678',
@@ -172,8 +190,8 @@ describe('parseLocations (필드는 기획서 §2 실측 기준 — 실제 fixtu
               stationSeq: 52,
               stateCd: 1,
               remainSeatCnt: -1,
-              crowded: 'Y',
-              lowPlate: 'Y',
+              crowded: 3,
+              lowPlate: 1,
             },
             {
               plateNo: '경기70아9999',
@@ -195,14 +213,18 @@ describe('parseLocations (필드는 기획서 §2 실측 기준 — 실제 fixtu
     expect(res.items[0]!.observedAt.toISOString()).toBe(
       '2026-09-02T23:00:00.000Z',
     );
+    expect(res.items[0]).toMatchObject({
+      crowding: 'relaxed',
+      lowFloor: false,
+    });
     expect(res.items[1]).toMatchObject({
-      crowded: true,
+      crowding: 'crowded',
       lowFloor: true,
       remainSeats: -1,
     });
     expect(res.items[2]).toMatchObject({
       remainSeats: null,
-      crowded: null,
+      crowding: null,
       lowFloor: null,
     });
   });
