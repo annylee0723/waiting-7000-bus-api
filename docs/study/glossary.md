@@ -25,12 +25,14 @@
 
 - **단위 테스트** — 함수 하나를 직접 호출. · Vitest, 이미 앎. · 1단계 ✅
 - **e2e 테스트** — 진짜 HTTP 요청을 보내 검사. `supertest`. · 1단계 ✅
-- **fixture** — 실제 API 응답을 파일로 녹화한 것. `fixtures/gbis/*.json`. · MSW 핸들러에 넣던 그 JSON. · 2단계
-- **계약 테스트** — fixture를 파서에 넣어 "우리가 기대하는 모양"이 나오는지. API가 바뀌면 여기서 먼저 깨진다. · 3단계
+- **fixture** — 실제 API 응답을 파일로 녹화한 것. `fixtures/gbis/*.json`. · MSW 핸들러에 넣던 그 JSON. · 3단계 ✅ (위치 fixture는 2단계에서 녹화)
+- **계약 테스트** — fixture를 파서에 넣어 "우리가 기대하는 모양"이 나오는지. API가 바뀌면 여기서 먼저 깨진다. · [03 노트](03-parser-contract-test.md) · 3단계 ✅
 
 ## 구조
 
-- **domain / application / infra** — [00 노트](00-why-a-server.md) 3층 구조 참조. · 3단계
+- **경계에서 파싱** — 바깥(API·DB·폼) 데이터가 들어오는 한 지점에서 모양을 검사하고 우리 타입으로 바꾼다. 그 뒤는 우리 타입만 돈다. · zod를 제출 지점 한 곳에서만 쓰는 것. · [03 노트](03-parser-contract-test.md) · 3단계 ✅
+
+- **domain / application / infra** — [00 노트](00-why-a-server.md) 3층 구조 참조. `src/domain/gbis/`가 첫 domain 코드. · 3단계 ✅
 - **포트(port) / 어댑터** — domain이 "이런 모양의 저장소가 필요해"라고 인터페이스만 선언(port), infra가 진짜 구현(adapter). · props로 콜백만 받고 구현은 부모가 주는 것. · 5단계
 - **유스케이스** — "폴 한 번"처럼 한 문장으로 말할 수 있는 일 단위. · 커스텀 훅. · 6단계
 
