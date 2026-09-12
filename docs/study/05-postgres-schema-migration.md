@@ -86,3 +86,15 @@ ORDER BY rs.seq;
 ```
 
 `JOIN`은 "route_station의 station_id로 station 표를 찾아 옆에 붙여라"다. 표를 나눠 놓은 대가로 읽을 때 이렇게 붙인다.
+
+## 실제로 돌린 결과 (2026-09-12)
+
+```
+적용: 001_init.sql
+7002 (239000141) [fixture]: 유명산종점 ↔ 잠실역.롯데월드
+  정류소 61개 · 형상 1512점 · 총 길이 116.4km
+```
+
+막혔던 곳 둘. (1) `.env`에 Neon 문자열 대신 `postgres://user:…@localhost:5432/mydatabase` 예시가 들어가 있어서 `ECONNREFUSED 127.0.0.1:5432`. 에러의 주소를 읽으면 "Neon이 아니라 내 맥으로 갔다"가 바로 보인다. (2) 연결 문자열을 채팅에 붙였다 → Connect 창의 **Reset password**로 비밀번호 교체. 연결 문자열은 통째로 비밀이다.
+
+`pg`가 찍는 SSL 경고는 `sslmode=require`를 `verify-full`로 바꿔 넣어 없앴다(`pool.ts`). 뜻은 같고 이름만 명시한 것이다.
