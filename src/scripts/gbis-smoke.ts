@@ -3,6 +3,7 @@
 //   --record: 위치 응답 원본을 fixtures/gbis/locations-<routeId>.json 으로 저장 (운행시간에만 의미 있음)
 import { writeFileSync } from 'node:fs';
 import { HttpGbisClient } from '../infra/gbis/gbis-client.js';
+import { KNOWN_ROUTES } from '../domain/gbis/routes.js';
 
 const routeId = Number(process.argv[2] ?? 239000139);
 const record = process.argv.includes('--record');
@@ -53,12 +54,7 @@ if (locations.kind === 'ok') {
 
 if (record) {
   const raw = await rawLocations();
-  const ROUTE_NO: Record<number, number> = {
-    239000139: 7000,
-    239000140: 7001,
-    239000141: 7002,
-  };
-  const path = `fixtures/gbis/locations-${ROUTE_NO[routeId] ?? routeId}.json`;
+  const path = `fixtures/gbis/locations-${KNOWN_ROUTES[routeId] ?? routeId}.json`;
   writeFileSync(path, JSON.stringify(raw, null, 2));
   console.log(`\n저장: ${path} (호출 1건 추가)`);
 }
