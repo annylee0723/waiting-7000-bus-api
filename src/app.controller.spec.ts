@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { describe, beforeEach, it, expect } from 'vitest';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { PollerService } from './infra/nest/poller.service.js';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -9,7 +10,10 @@ describe('AppController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        AppService,
+        { provide: PollerService, useValue: { last: new Map() } },
+      ],
     }).compile();
 
     appController = app.get(AppController);
@@ -19,5 +23,6 @@ describe('AppController', () => {
     const body = appController.health();
     expect(body.ok).toBe(true);
     expect(new Date(body.now).toISOString()).toBe(body.now);
+    expect(body.lastPoll).toEqual({});
   });
 });

@@ -37,13 +37,19 @@ beforeAll(async () => {
 afterAll(() => pg.close());
 
 describe('runMigrations', () => {
-  it('001을 적용하고, 두 번째 실행은 아무것도 안 한다', async () => {
-    expect(await runMigrations(db, MIGRATIONS)).toEqual(['001_init.sql']);
+  it('001·002를 적용하고, 두 번째 실행은 아무것도 안 한다', async () => {
+    expect(await runMigrations(db, MIGRATIONS)).toEqual([
+      '001_init.sql',
+      '002_observation.sql',
+    ]);
     expect(await runMigrations(db, MIGRATIONS)).toEqual([]);
     const { rows } = await db.query<{ name: string }>(
       'SELECT name FROM schema_migration',
     );
-    expect(rows.map((r) => r.name)).toEqual(['001_init.sql']);
+    expect(rows.map((r) => r.name)).toEqual([
+      '001_init.sql',
+      '002_observation.sql',
+    ]);
   });
 });
 
